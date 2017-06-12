@@ -1,0 +1,62 @@
+package ast;
+
+import visitor.Visitable;
+import visitor.Visitor;
+
+public class Variable extends Node implements Visitable {
+
+	String name;
+
+	public Variable(String name) {
+		super(0);
+		this.name = name;
+		this.numericValue = NO_SET;
+	}
+
+	@Override
+	public Node accept(Visitor visit) {
+		return visit.visit(this);
+	}
+
+	public void setValue(int value) {
+		super.numericValue = value;
+		super.booleanValue = true; // a value was assigned to this variable
+	}
+
+	/**
+	 * For a variable, the numeric value is taken from the context. If it
+	 * doesn't exist, the value is NO_SET
+	 */
+	@Override
+	public int evalNumericValue() {
+		if (context.size() != 0) {
+			if (context.get(name) != null)
+				this.setNumericValue(context.get(name));
+		}
+		return super.numericValue;
+	}
+
+	/**
+	 * The boolean value for a variable is false if the variable's value is
+	 * NO_SET, true otherwise
+	 */
+	@Override
+	public boolean evalBooleanValue() {
+		evalNumericValue();
+		if (numericValue != NO_SET) {
+			this.setBooleanValue(true);
+			return true;
+		}
+		this.setBooleanValue(false);
+		return false;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	@Override
+	public String toString() {
+		return "node variable " + name + "value " + numericValue;
+	}
+}

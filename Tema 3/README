@@ -1,0 +1,35 @@
+Frunza Roxana 321CB
+Tema 3 - Prolog
+
+Pentru parsarea listei pe care o primim in urma parserului dat in scheletul
+de cod,  folosim Definite Clause Grammar care ne lasa neschimbat totul inafara
+de numele variabilelor si valorile numerice. Acestea sunt transformate in 
+predicate de forma num(V) si var(V). Dupa ce avem aceasta lista, o parsam 
+folosind alte clauze DCG. Astfel, cream o lista de programe care urmeaza
+a fi evaluate. La parsare, pe langa instructiunile principale, avem nevoie
+si de reguli de parsare pentru un bloc de instructiuni. Acesta este salvat
+sub forma seq(S1, S2) unde S1 este o instructiune iar S2 este fie o instructiune
+fie mai multe (lucru ce va insemna ca va fi evaluat la seq(S', S3) etc). De
+asemenea, cand parsam operatiile aritmetice, trebuie sa avem grija la ordinea
+operatiilor. Am implementat ideea prezentata la curs si anume o expresie de adunare 
+(exp) este o expresie de inmultire (term) care poate fi urmata de "+" si o alta
+expresie de adunare. Expresia de inmultire (term) este format dintr-un element
+(poate fi fie variabila, fie numar). Aceasta expresie poate fi urmata de semnul
+"*" si de o alta expresie de inmultire. In urma acestei parsari ne rezulta un AST
+respecta ordinea operatiilor.
+Pentru evaluare, evaluam fiecare program din lista de programe rezultata in urma
+parsarii. Evaluarea se opreste daca lista programelor a devenit vida sau valoarea 
+pe care o salvam devine diferita de x (initial aceastea este 'x' pentru a semnala
+ca nu am ajuns la return). Acestea valoarea poate fi 'a' daca o instructiune de 
+assert esueaza sau daca am ajuns la o instructiune de return si am calculat
+valoarea programului. Contextul este salvat folosind associations lists (assoc).
+In final, pentru a verifica daca am intampinat vreo eroare avem in considerare 
+urmatoarele lucruri:
+- auxiliary intoarce false daca conv_atoms esueaza (adica daca un nume de variabila 
+nu este format numai din cifre) sau eval_progs esueaza (adica am folosit o variabila
+neinitializata). In acest caz intoarcem eroarea 'e'.
+- daca in urma evaluarii folosind eval_progs, Value este 'x' inseamna ca nu am
+ajuns la o instructiune de return. Intoarcem eroarea 'x'.
+- daca variabila este diferita de 'x' intoarcem rezultatul care poate fi 'a' daca
+o instructiune de assert a esuat sau valoarea programului daca totul a fost executat
+fara erori.

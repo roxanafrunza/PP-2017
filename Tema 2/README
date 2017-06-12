@@ -1,0 +1,51 @@
+Frunza Roxana 321CB
+
+La aceasta tema, am rezolvat doar evaluarea programului, fara parsare.
+Toate valorile variabilelor sunt salvate intr-un context (env) care
+este un Map de String si Int.
+
+Am implementat o functie evalExpression care evalueaza TDA-ul Expr. Functia
+primeste un context si face pattern matching pe toti constructorii de baza
+ai TDA-ului Expr. Intai verificam daca toate variabilele sunt initializate 
+(sunt in context). Daca nu se gasesc in Map, intoarcem un cod de eroare
+"Unitialized variable". Pentru operatiile aritmetice (adunare, scadere,
+inmultire) vom intoarce rezultatul operatiei. Pentru operatiile boolene
+(< si ==) intoarcem 0 daca comparatia este falsa si 1 daca este adevarata.
+
+Avem o functie addEnv care adauga o variabila si valoarea acesteia in Map.
+Aceasta evalueaza expresia value (intoarce "Unitialized variable" daca sunt
+utilizate variabile neinitializate) sau noul context dupa adaugarea noii
+variabile.
+
+Pentru evaluarea programului, avem metoda getEnv. Aceasta primeste un context,
+un program si intoarce o pereche. Prima valoare a perechii rezultat este fie
+un cod de eroare (daca s-a folosit o variabile neinitializata sau o instructiune
+de assert a esuat) fie un context (acesta poate fi acelasi cu cel dat ca parametru
+sau poate fi modificat daca avem o instructiune de Assign). A doua valoare a 
+perechii este intial o constanta. Aceasta se va modifica daca se ajunge la o
+instructiune de return. Implementarea functiei face pattern matching pe toti
+constructorii de baza a TDA-ului.
+- pentru Eq - adaugam in context noua variabila, cum nu este o instructiune
+de return, a doua valoare din perechea rezultat este constant
+- pentru Seq - evaluam cele doua subprograme, contextul final este reuniunea
+celor doua iar valoarea de return poate fi fie cea din primul subprogram
+(daca a fost initializate) fie cea din a doua
+- pentru For - evaluam primul argument si dupa apelam o functie auxiliara.
+Aceasta se apeleaza recursiv si la fiecare apel: evalueaza programul din for
+si dupa evalueaza expresia de increment. In momentul in care conditia booleana
+nu mai este indeplinita, intoarcem noul context si o constanta.
+- pentru If - evaluam conditia booleana. In functie de valoarea ei, evaluam
+primul (ramura de if) sau al doilea (ramura de else).
+- pentru Return - evaluam expresia si intoarcem acelasi context cu valoarea
+rezultata in urma evaluarii
+- pentru Assert - evaluam conditia, daca este true intoarcem constant, daca
+este false intoarcem Eroare "Assert failed"
+
+In final, functia evalAdt apeleaza functia getEnv. Contextul initial este
+Map.empty. Dupa apelul functiei getEnv verificam daca primul parametrul
+al tuplului rezultat este un cod de eroare. Daca nu, luam cel de-al doilea
+argument al perechii si vedem daca este egal cu constant (inseamna ca nu s-a
+ajung la o instructiune de return) afisam "Missing return". Altfel, afisam
+valoarea programului.
+
+
